@@ -1,11 +1,10 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Crown, Eye, Loader2 } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import TemplateCard from '@/components/invitation/TemplateCard';
 import api from '@/lib/api';
 
 interface Template {
@@ -16,6 +15,7 @@ interface Template {
   category: string;
   thumbnailUrl?: string;
   isPremium: boolean;
+  schema: any;
 }
 
 const CATEGORIES = ['All', 'LUXURY', 'MINIMAL', 'FLORAL', 'ARABIC', 'DARK', 'MODERN', 'RUSTIC', 'BEACH'];
@@ -109,103 +109,13 @@ export default function TemplatesPage() {
           <p style={{ color: 'var(--mist)', fontSize: '0.85rem' }}>Try a different search or category filter</p>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.25rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: '1.25rem' }}>
           {templates.map((template) => (
-            <div
+            <TemplateCard
               key={template.id}
-              className="group"
-              style={{
-                borderRadius: 12, overflow: 'hidden',
-                border: '1px solid var(--ink-border)',
-                background: 'var(--ink-raised)',
-                transition: 'border-color 0.25s, box-shadow 0.25s, transform 0.25s',
-                cursor: 'pointer',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.borderColor = 'rgba(201,168,76,0.3)';
-                e.currentTarget.style.transform = 'translateY(-4px)';
-                e.currentTarget.style.boxShadow = '0 16px 40px rgba(0,0,0,0.4), 0 0 20px var(--gold-glow-lg)';
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.borderColor = 'var(--ink-border)';
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = 'none';
-              }}
-            >
-              {/* Thumbnail */}
-              <div style={{ aspectRatio: '3/4', background: 'var(--ink-surface)', position: 'relative', overflow: 'hidden' }}>
-                {template.thumbnailUrl ? (
-                  <img src={template.thumbnailUrl} alt={template.name}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s' }}
-                  />
-                ) : (
-                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '0.5rem' }}>
-                    {/* Template preview mockup */}
-                    <div style={{
-                      width: '70%',
-                      background: 'linear-gradient(160deg, #231C0F, #1A1508)',
-                      borderRadius: 8, padding: '1.5rem 1rem', textAlign: 'center',
-                      border: '1px solid rgba(201,168,76,0.15)',
-                    }}>
-                      <div style={{ fontSize: '0.5rem', letterSpacing: '0.15em', color: 'var(--gold-dim)', marginBottom: '0.5rem', textTransform: 'uppercase' }}>
-                        Invitation
-                      </div>
-                      <div className="font-display italic" style={{ color: 'var(--gold)', fontSize: '1.1rem' }}>
-                        {template.name.split(' ')[0]}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Overlay */}
-                <div style={{
-                  position: 'absolute', inset: 0, background: 'rgba(12,11,10,0.75)',
-                  opacity: 0, transition: 'opacity 0.25s',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
-                }}
-                  className="template-overlay"
-                  onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
-                  onMouseLeave={e => (e.currentTarget.style.opacity = '0')}
-                >
-                  <button
-                    onClick={() => router.push(`/invitations/new?template=${template.id}`)}
-                    className="btn-gold"
-                    style={{ padding: '8px 16px', borderRadius: 8, fontSize: '0.78rem', border: 'none' }}
-                  >
-                    Use Template
-                  </button>
-                </div>
-
-                {/* Hover overlay trigger wrapper */}
-                <div
-                  style={{ position: 'absolute', inset: 0 }}
-                  onMouseEnter={e => {
-                    const overlay = e.currentTarget.previousElementSibling as HTMLElement;
-                    if (overlay) overlay.style.opacity = '1';
-                  }}
-                  onMouseLeave={e => {
-                    const overlay = e.currentTarget.previousElementSibling as HTMLElement;
-                    if (overlay) overlay.style.opacity = '0';
-                  }}
-                />
-
-                {template.isPremium && (
-                  <div style={{ position: 'absolute', top: '0.75rem', right: '0.75rem' }}>
-                    <span className="badge-gold" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <Crown size={9} /> Premium
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              {/* Info */}
-              <div style={{ padding: '0.875rem 1rem' }}>
-                <div style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--champagne)', marginBottom: '0.35rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {template.name}
-                </div>
-                <span className="badge-muted">{template.category.toLowerCase()}</span>
-              </div>
-            </div>
+              template={template}
+              onSelect={() => router.push(`/invitations/new?template=${template.id}`)}
+            />
           ))}
         </div>
       )}
