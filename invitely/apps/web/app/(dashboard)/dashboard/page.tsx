@@ -42,105 +42,152 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="p-8">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+    <div style={{ padding: '2.5rem 2.5rem', minHeight: '100%', background: 'var(--ink)' }}>
+      {/* ── Header ── */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">
-            Welcome back, {user?.name?.split(' ')[0]}!
+          <div style={{ fontSize: '0.65rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--gold-dim)', marginBottom: '0.4rem' }}>
+            Dashboard
+          </div>
+          <h1 className="font-display" style={{ fontSize: '2rem', color: 'var(--champagne)', lineHeight: 1.1 }}>
+            Good to see you, <span style={{ color: 'var(--gold-light)' }}>{user?.name?.split(' ')[0]}</span>
           </h1>
-          <p className="text-zinc-500 mt-1">Here's an overview of your invitations</p>
         </div>
         <Link href="/templates">
-          <Button className="bg-amber-600 hover:bg-amber-700">
-            <Plus size={16} className="mr-2" /> Create Invitation
+          <Button size="sm" style={{ padding: '0.625rem 1.25rem', borderRadius: '8px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Plus size={14} /> New Invitation
           </Button>
         </Link>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      {/* ── Stats ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
         {[
-          { label: 'Total Invitations', value: stats.total, icon: Mail, color: 'text-amber-600' },
-          { label: 'Published', value: stats.published, icon: ExternalLink, color: 'text-green-600' },
-          { label: 'Total Views', value: stats.totalViews, icon: Eye, color: 'text-blue-600' },
-          { label: 'Total RSVPs', value: stats.totalRsvps, icon: TrendingUp, color: 'text-purple-600' },
+          { label: 'Invitations', value: stats.total, icon: Mail },
+          { label: 'Published', value: stats.published, icon: ExternalLink },
+          { label: 'Total Views', value: stats.totalViews, icon: Eye },
+          { label: 'RSVPs', value: stats.totalRsvps, icon: TrendingUp },
         ].map((stat) => (
-          <Card key={stat.label}>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-zinc-500">{stat.label}</p>
-                  <p className="text-3xl font-bold text-zinc-900 dark:text-white mt-1">{stat.value}</p>
-                </div>
-                <stat.icon className={`w-8 h-8 ${stat.color} opacity-80`} />
-              </div>
-            </CardContent>
-          </Card>
+          <div key={stat.label} className="stat-card">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+              <span style={{ fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--dust)' }}>
+                {stat.label}
+              </span>
+              <stat.icon size={14} style={{ color: 'var(--gold-dim)' }} />
+            </div>
+            <div className="font-display" style={{ fontSize: '2.25rem', color: 'var(--champagne)', lineHeight: 1 }}>
+              {stat.value}
+            </div>
+          </div>
         ))}
       </div>
 
-      {/* Invitations List */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Your Invitations</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="animate-spin text-amber-600" size={32} />
-            </div>
-          ) : invitations.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="text-5xl mb-4">💍</div>
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-2">No invitations yet</h3>
-              <p className="text-zinc-500 mb-6">Create your first invitation to get started</p>
-              <Link href="/templates">
-                <Button className="bg-amber-600 hover:bg-amber-700">
-                  <Plus size={16} className="mr-2" /> Create Your First Invitation
-                </Button>
-              </Link>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {invitations.map((inv) => (
-                <div
-                  key={inv.id}
-                  className="flex items-center justify-between p-4 rounded-lg border border-zinc-100 dark:border-zinc-800 hover:border-amber-200 dark:hover:border-amber-800 transition-colors"
-                >
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold text-zinc-900 dark:text-white truncate">{inv.title}</h3>
-                      <Badge variant={inv.status === 'PUBLISHED' ? 'default' : 'outline'} className="text-xs">
-                        {inv.status}
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-zinc-500">
-                      {inv.groomName} & {inv.brideName} · {formatDate(inv.eventDate)}
-                    </p>
-                    <div className="flex items-center gap-4 mt-1 text-xs text-zinc-400">
-                      <span className="flex items-center gap-1"><Eye size={12} /> {inv.viewCount} views</span>
-                      <span className="flex items-center gap-1"><Mail size={12} /> {inv._count?.rsvpResponses || 0} RSVPs</span>
-                    </div>
+      {/* ── Invitations ── */}
+      <div className="atelier-card" style={{ overflow: 'hidden' }}>
+        <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--ink-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <h2 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--champagne)' }}>Your Invitations</h2>
+          <Link href="/invitations" style={{ fontSize: '0.75rem', color: 'var(--gold)', textDecoration: 'none' }}>
+            View all →
+          </Link>
+        </div>
+
+        {loading ? (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '3rem' }}>
+            <div className="spinner" />
+          </div>
+        ) : invitations.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+            <div className="font-display italic" style={{ fontSize: '3rem', color: 'var(--gold-dim)', opacity: 0.4, marginBottom: '1rem' }}>♡</div>
+            <h3 style={{ color: 'var(--champagne)', fontSize: '1rem', marginBottom: '0.5rem' }}>No invitations yet</h3>
+            <p style={{ color: 'var(--mist)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+              Choose a template and craft your first invitation
+            </p>
+            <Link href="/templates">
+              <Button size="sm" style={{ padding: '0.625rem 1.25rem' }}>
+                <Plus size={13} style={{ marginRight: 6 }} /> Browse Templates
+              </Button>
+            </Link>
+          </div>
+        ) : (
+          <div>
+            {invitations.slice(0, 6).map((inv, idx) => (
+              <div
+                key={inv.id}
+                style={{
+                  display: 'flex', alignItems: 'center',
+                  padding: '1rem 1.5rem',
+                  borderBottom: idx < invitations.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none',
+                  transition: 'background 0.15s',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(201,168,76,0.03)')}
+                onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+              >
+                {/* Couple initial avatar */}
+                <div style={{
+                  width: 38, height: 38, borderRadius: 8, flexShrink: 0,
+                  background: 'linear-gradient(135deg, var(--ink-surface), var(--ink-raised))',
+                  border: '1px solid var(--ink-border)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  marginRight: '1rem',
+                }}>
+                  <span className="font-display italic" style={{ color: 'var(--gold-dim)', fontSize: '1rem' }}>
+                    {inv.groomName.charAt(0)}
+                  </span>
+                </div>
+
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.2rem' }}>
+                    <span style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--champagne)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {inv.groomName} <span className="font-display italic" style={{ color: 'var(--gold-dim)' }}>&amp;</span> {inv.brideName}
+                    </span>
+                    <span className={inv.status === 'PUBLISHED' ? 'badge-published' : 'badge-muted'}>
+                      {inv.status}
+                    </span>
                   </div>
-                  <div className="flex items-center gap-2 ml-4">
-                    <Link href={`/builder/${inv.id}`}>
-                      <Button variant="outline" size="sm">Edit</Button>
-                    </Link>
-                    {inv.status === 'PUBLISHED' && (
-                      <Link href={`/inv/${inv.slug}`} target="_blank">
-                        <Button variant="ghost" size="sm">
-                          <ExternalLink size={14} />
-                        </Button>
-                      </Link>
-                    )}
+                  <div style={{ fontSize: '0.75rem', color: 'var(--dust)', display: 'flex', gap: '1rem' }}>
+                    <span>{formatDate(inv.eventDate)}</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <Eye size={10} /> {inv.viewCount}
+                    </span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <Mail size={10} /> {inv._count?.rsvpResponses || 0}
+                    </span>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginLeft: '1rem' }}>
+                  <Link href={`/builder/${inv.id}`}>
+                    <button style={{
+                      padding: '5px 12px', borderRadius: 6, fontSize: '0.75rem',
+                      background: 'var(--ink-surface)', border: '1px solid var(--ink-border-strong)',
+                      color: 'var(--champagne)', cursor: 'pointer', transition: 'border-color 0.2s',
+                    }}
+                      onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--gold-dim)')}
+                      onMouseLeave={e => (e.currentTarget.style.borderColor = 'var(--ink-border-strong)')}
+                    >
+                      Edit
+                    </button>
+                  </Link>
+                  {inv.status === 'PUBLISHED' && (
+                    <Link href={`/inv/${inv.slug}`} target="_blank">
+                      <button style={{
+                        width: 30, height: 30, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        borderRadius: 6, background: 'none', border: '1px solid transparent',
+                        color: 'var(--dust)', cursor: 'pointer', transition: 'color 0.2s',
+                      }}
+                        onMouseEnter={e => { e.currentTarget.style.color = 'var(--gold)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.color = 'var(--dust)'; }}
+                      >
+                        <ExternalLink size={13} />
+                      </button>
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

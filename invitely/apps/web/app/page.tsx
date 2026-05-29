@@ -1,125 +1,352 @@
 import Link from 'next/link';
 
+const FEATURES = [
+  {
+    num: '01',
+    title: 'Curated Templates',
+    desc: 'Twenty bespoke designs spanning Luxury, Floral, Arabic, Dark Glamour, and Modern Minimal — each crafted by professional designers.',
+  },
+  {
+    num: '02',
+    title: 'Live Builder',
+    desc: 'Drag, rearrange, and preview every section in real time. Your invitation is always one click from perfection.',
+  },
+  {
+    num: '03',
+    title: 'Intelligent RSVP',
+    desc: 'A multi-step guest experience with meal preferences, plus-ones, and live dashboard — all delivered instantly.',
+  },
+  {
+    num: '04',
+    title: 'Deep Analytics',
+    desc: 'Know exactly who opened your invitation, from which device, and through which channel. Beautifully visualised.',
+  },
+];
+
+const PLANS = [
+  {
+    name: 'Complimentary',
+    price: '$0',
+    period: 'forever',
+    features: ['1 invitation', '50 guests', 'Free templates', 'RSVP collection'],
+    cta: 'Begin',
+    href: '/register',
+    accent: false,
+  },
+  {
+    name: 'Essential',
+    price: '$9',
+    period: 'per month',
+    features: ['3 invitations', '200 guests', 'All templates', 'CSV export', 'Email notifications'],
+    cta: 'Choose Essential',
+    href: '/register',
+    accent: true,
+  },
+  {
+    name: 'Prestige',
+    price: '$19',
+    period: 'per month',
+    features: ['Unlimited invitations', 'Unlimited guests', 'Custom domain', 'Priority support', 'Advanced analytics'],
+    cta: 'Choose Prestige',
+    href: '/register',
+    accent: false,
+  },
+];
+
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-white dark:bg-zinc-950">
-      {/* Navigation */}
-      <nav className="flex items-center justify-between px-8 py-5 border-b border-zinc-100 dark:border-zinc-800">
-        <div className="flex items-center gap-2">
-          <span className="text-2xl font-serif text-amber-700">Invitely</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link href="/login" className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors">
+    <div style={{ background: 'var(--ink)', color: 'var(--champagne)', minHeight: '100vh' }}>
+
+      {/* ── Navigation ─────────────────────────────────────── */}
+      <nav style={{ borderBottom: '1px solid var(--ink-border)' }} className="flex items-center justify-between px-8 md:px-16 py-5">
+        <span className="font-display text-2xl" style={{ color: 'var(--gold-light)', letterSpacing: '-0.01em' }}>
+          Invitely
+        </span>
+        <div className="flex items-center gap-6">
+          <Link href="/login" className="text-sm transition-colors duration-200"
+            style={{ color: 'var(--mist)' }}
+            onMouseEnter={e => (e.currentTarget.style.color = 'var(--champagne)')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--mist)')}>
             Sign In
           </Link>
           <Link
             href="/register"
-            className="bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-amber-700 transition-colors"
+            className="btn-gold text-sm px-5 py-2.5 rounded-lg"
           >
-            Get Started Free
+            Begin Your Story
           </Link>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="max-w-6xl mx-auto px-8 py-24 text-center">
-        <div className="inline-flex items-center gap-2 bg-amber-50 text-amber-700 px-3 py-1 rounded-full text-sm font-medium mb-8 dark:bg-amber-900/20 dark:text-amber-400">
-          <span>✨</span>
-          <span>Premium Digital Wedding Invitations</span>
+      {/* ── Hero ───────────────────────────────────────────── */}
+      <section className="relative overflow-hidden px-8 md:px-16 pt-28 pb-36 text-center">
+        {/* Radial glow backdrop */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse 70% 55% at 50% 30%, rgba(201,168,76,0.09) 0%, transparent 70%)',
+          }}
+        />
+
+        {/* Eyebrow */}
+        <div className="inline-flex items-center gap-3 mb-10 animate-fade-up" style={{ animationDelay: '0s', opacity: 0 }}>
+          <div style={{ height: '1px', width: '40px', background: 'var(--gold-dim)' }} />
+          <span className="text-xs tracking-widest uppercase" style={{ color: 'var(--gold)', fontWeight: 600 }}>
+            Premium Digital Invitations
+          </span>
+          <div style={{ height: '1px', width: '40px', background: 'var(--gold-dim)' }} />
         </div>
-        <h1 className="text-5xl md:text-7xl font-serif text-zinc-900 dark:text-white mb-6 leading-tight">
-          Craft Your Perfect
+
+        {/* Headline */}
+        <h1
+          className="font-display animate-fade-up"
+          style={{
+            fontSize: 'clamp(3rem, 8vw, 7.5rem)',
+            lineHeight: 1.05,
+            letterSpacing: '-0.02em',
+            animationDelay: '0.12s',
+            opacity: 0,
+          }}
+        >
+          <span style={{ color: 'var(--champagne)' }}>Every great love</span>
           <br />
-          <span className="text-amber-600">Love Story</span>
+          <span className="gold-gradient font-display italic">deserves a great invitation.</span>
         </h1>
-        <p className="text-xl text-zinc-500 dark:text-zinc-400 mb-10 max-w-2xl mx-auto">
-          Create stunning digital wedding invitations in minutes. Beautiful templates, RSVP management, and real-time analytics — all in one place.
+
+        {/* Sub */}
+        <p
+          className="animate-fade-up mx-auto mt-8 text-lg leading-relaxed"
+          style={{ maxWidth: 540, color: 'var(--mist)', animationDelay: '0.24s', opacity: 0 }}
+        >
+          Craft breathtaking digital wedding invitations with our luxury builder.
+          Seamless RSVP collection, real-time analytics, and templates that astonish.
         </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link
-            href="/register"
-            className="bg-amber-600 text-white px-8 py-4 rounded-xl text-base font-semibold hover:bg-amber-700 transition-colors shadow-lg shadow-amber-200 dark:shadow-amber-900/20"
-          >
-            Start Free — No Credit Card
+
+        {/* CTAs */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-12 animate-fade-up" style={{ animationDelay: '0.36s', opacity: 0 }}>
+          <Link href="/register" className="btn-gold px-8 py-4 rounded-xl text-sm font-semibold inline-block" style={{ letterSpacing: '0.04em' }}>
+            Create Your Invitation — Free
           </Link>
-          <Link
-            href="/templates"
-            className="border border-zinc-200 text-zinc-700 px-8 py-4 rounded-xl text-base font-medium hover:border-zinc-400 transition-colors dark:border-zinc-700 dark:text-zinc-300"
-          >
-            Browse Templates
+          <Link href="/register" className="btn-ghost px-8 py-4 rounded-xl text-sm inline-block">
+            View Templates
           </Link>
         </div>
-      </section>
 
-      {/* Features */}
-      <section className="max-w-6xl mx-auto px-8 py-16">
-        <div className="grid md:grid-cols-3 gap-8">
-          {[
-            {
-              icon: '🎨',
-              title: 'Beautiful Templates',
-              desc: '20+ stunning designs — Luxury, Minimal, Floral, Arabic, and more.',
-            },
-            {
-              icon: '📱',
-              title: 'Mobile-First Design',
-              desc: 'Your invitations look stunning on every device, guaranteed.',
-            },
-            {
-              icon: '📊',
-              title: 'RSVP & Analytics',
-              desc: 'Manage guest responses in real-time with live analytics.',
-            },
-          ].map((f) => (
-            <div key={f.title} className="p-6 rounded-2xl border border-zinc-100 dark:border-zinc-800 hover:border-amber-200 dark:hover:border-amber-800 transition-colors">
-              <div className="text-4xl mb-4">{f.icon}</div>
-              <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-2">{f.title}</h3>
-              <p className="text-zinc-500 dark:text-zinc-400 text-sm">{f.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+        {/* Social proof */}
+        <p className="mt-10 text-xs animate-fade-up" style={{ color: 'var(--dust)', animationDelay: '0.48s', opacity: 0, letterSpacing: '0.06em' }}>
+          TRUSTED BY <span style={{ color: 'var(--gold)' }}>12,000+</span> COUPLES WORLDWIDE
+        </p>
 
-      {/* Pricing */}
-      <section className="max-w-6xl mx-auto px-8 py-16">
-        <h2 className="text-3xl font-serif text-center text-zinc-900 dark:text-white mb-12">Simple, Transparent Pricing</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {[
-            { name: 'Free', price: '$0', features: ['1 invitation', '50 guests', 'Free templates', 'Basic RSVP'], cta: 'Start Free', href: '/register', highlight: false },
-            { name: 'Basic', price: '$9/mo', features: ['3 invitations', '200 guests', 'All templates', 'CSV export'], cta: 'Get Basic', href: '/register', highlight: true },
-            { name: 'Premium', price: '$19/mo', features: ['Unlimited invitations', 'Unlimited guests', 'Custom domain', 'Priority support'], cta: 'Get Premium', href: '/register', highlight: false },
-          ].map((plan) => (
+        {/* Floating card preview */}
+        <div
+          className="animate-float mx-auto mt-20 animate-fade-up"
+          style={{
+            maxWidth: 380,
+            animationDelay: '0.6s',
+            opacity: 0,
+          }}
+        >
+          <div
+            className="atelier-card text-left overflow-hidden"
+            style={{ boxShadow: '0 32px 80px rgba(0,0,0,0.6), 0 0 60px var(--gold-glow-lg)' }}
+          >
             <div
-              key={plan.name}
-              className={`p-6 rounded-2xl border-2 ${plan.highlight ? 'border-amber-500 shadow-lg shadow-amber-100 dark:shadow-amber-900/20' : 'border-zinc-100 dark:border-zinc-800'}`}
+              style={{
+                background: 'linear-gradient(160deg, #1C170F, #2A2010)',
+                padding: '2rem',
+                borderBottom: '1px solid var(--ink-border)',
+                position: 'relative',
+              }}
             >
-              {plan.highlight && (
-                <div className="text-xs font-bold text-amber-600 uppercase tracking-wide mb-2">Most Popular</div>
-              )}
-              <div className="text-2xl font-bold text-zinc-900 dark:text-white mb-1">{plan.name}</div>
-              <div className="text-3xl font-serif text-amber-600 mb-6">{plan.price}</div>
-              <ul className="space-y-2 mb-6">
-                {plan.features.map((f) => (
-                  <li key={f} className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-                    <span className="text-green-500">✓</span> {f}
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href={plan.href}
-                className={`block text-center py-2.5 rounded-lg text-sm font-semibold transition-colors ${plan.highlight ? 'bg-amber-600 text-white hover:bg-amber-700' : 'border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:border-amber-400'}`}
-              >
-                {plan.cta}
-              </Link>
+              <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.12), transparent)' }} />
+              <div className="relative text-center">
+                <div style={{ color: 'var(--gold-dim)', fontSize: '0.7rem', letterSpacing: '0.18em', marginBottom: '0.75rem' }}>WEDDING INVITATION</div>
+                <div className="font-display italic" style={{ fontSize: '2.2rem', color: 'var(--gold-light)', lineHeight: 1.2 }}>
+                  Layla<br />&amp; Karim
+                </div>
+                <div style={{ color: 'var(--mist)', fontSize: '0.8rem', marginTop: '0.75rem', letterSpacing: '0.08em' }}>
+                  SATURDAY, 14 JUNE 2025 · DUBAI
+                </div>
+              </div>
             </div>
-          ))}
+            <div style={{ padding: '1.25rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <div style={{ fontSize: '0.65rem', color: 'var(--dust)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Venue</div>
+                <div style={{ fontSize: '0.85rem', color: 'var(--champagne)', marginTop: '2px' }}>Atlantis The Palm</div>
+              </div>
+              <div
+                className="btn-gold"
+                style={{ padding: '6px 16px', borderRadius: 6, fontSize: '0.75rem', letterSpacing: '0.04em' }}
+              >
+                RSVP
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-zinc-100 dark:border-zinc-800 py-8 text-center text-sm text-zinc-400">
-        <p>© 2025 Invitely. All rights reserved.</p>
+      {/* ── Features ──────────────────────────────────────── */}
+      <section style={{ borderTop: '1px solid var(--ink-border)' }} className="px-8 md:px-16 py-28">
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-16 flex items-end justify-between flex-wrap gap-6">
+            <h2 className="font-display" style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', color: 'var(--champagne)', lineHeight: 1.1 }}>
+              Everything you need<br />
+              <span className="gold-gradient italic">to create magic.</span>
+            </h2>
+            <p style={{ maxWidth: 320, color: 'var(--mist)', fontSize: '0.95rem' }}>
+              A complete platform designed around the most important day of your life.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-px" style={{ background: 'var(--ink-border)' }}>
+            {FEATURES.map((f) => (
+              <div
+                key={f.num}
+                className="group"
+                style={{
+                  background: 'var(--ink)',
+                  padding: '2.5rem',
+                  transition: 'background 0.25s',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.background = 'var(--ink-raised)')}
+                onMouseLeave={e => (e.currentTarget.style.background = 'var(--ink)')}
+              >
+                <div className="font-display" style={{ fontSize: '3rem', color: 'var(--ink-border-strong)', lineHeight: 1, marginBottom: '1.25rem' }}>
+                  {f.num}
+                </div>
+                <h3 className="font-display" style={{ fontSize: '1.35rem', color: 'var(--champagne)', marginBottom: '0.75rem' }}>
+                  {f.title}
+                </h3>
+                <p style={{ color: 'var(--mist)', fontSize: '0.9rem', lineHeight: 1.7 }}>{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Pricing ───────────────────────────────────────── */}
+      <section style={{ borderTop: '1px solid var(--ink-border)' }} className="px-8 md:px-16 py-28">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="ornament mb-6 text-xs tracking-widest uppercase" style={{ color: 'var(--gold-dim)', fontSize: '0.65rem' }}>
+              Pricing
+            </div>
+            <h2 className="font-display" style={{ fontSize: 'clamp(2rem, 4vw, 3.25rem)', color: 'var(--champagne)' }}>
+              Begin free.<br />
+              <span className="gold-gradient italic">Grow without limits.</span>
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {PLANS.map((plan) => (
+              <div
+                key={plan.name}
+                className="atelier-card flex flex-col"
+                style={plan.accent ? {
+                  borderColor: 'rgba(201,168,76,0.35)',
+                  boxShadow: '0 0 40px var(--gold-glow-lg)',
+                  position: 'relative',
+                } : {}}
+              >
+                {plan.accent && (
+                  <div style={{
+                    position: 'absolute',
+                    top: 0, left: 0, right: 0,
+                    height: '2px',
+                    background: 'linear-gradient(90deg, transparent, var(--gold), transparent)',
+                  }} />
+                )}
+                <div style={{ padding: '2rem 2rem 1.5rem' }}>
+                  {plan.accent && (
+                    <div className="badge-gold mb-3" style={{ display: 'inline-block' }}>Most chosen</div>
+                  )}
+                  <div style={{ color: 'var(--mist)', fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+                    {plan.name}
+                  </div>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="font-display" style={{ fontSize: '3rem', color: plan.accent ? 'var(--gold-light)' : 'var(--champagne)', lineHeight: 1 }}>
+                      {plan.price}
+                    </span>
+                    <span style={{ color: 'var(--dust)', fontSize: '0.8rem' }}>/ {plan.period}</span>
+                  </div>
+                </div>
+
+                <div style={{ height: '1px', background: 'var(--ink-border)', margin: '0 2rem' }} />
+
+                <ul style={{ padding: '1.5rem 2rem', flex: 1, listStyle: 'none' }} className="space-y-3">
+                  {plan.features.map((feat) => (
+                    <li key={feat} className="flex items-center gap-3" style={{ fontSize: '0.875rem', color: 'var(--mist)' }}>
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <circle cx="7" cy="7" r="6" stroke="var(--gold-dim)" strokeWidth="1"/>
+                        <path d="M4 7l2 2 4-4" stroke="var(--gold)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      {feat}
+                    </li>
+                  ))}
+                </ul>
+
+                <div style={{ padding: '0 2rem 2rem' }}>
+                  <Link
+                    href={plan.href}
+                    className={plan.accent ? 'btn-gold' : 'btn-ghost'}
+                    style={{
+                      display: 'block',
+                      textAlign: 'center',
+                      padding: '0.75rem',
+                      borderRadius: '8px',
+                      fontSize: '0.875rem',
+                      fontWeight: 600,
+                      letterSpacing: '0.04em',
+                      textDecoration: 'none',
+                    }}
+                  >
+                    {plan.cta}
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA Banner ────────────────────────────────────── */}
+      <section style={{ borderTop: '1px solid var(--ink-border)' }} className="px-8 md:px-16 py-28">
+        <div
+          className="max-w-4xl mx-auto text-center rounded-2xl overflow-hidden relative"
+          style={{ background: 'linear-gradient(135deg, #1C170F, #241C0E)', border: '1px solid rgba(201,168,76,0.2)', padding: '4rem 2rem' }}
+        >
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 80% 70% at 50% 0%, rgba(201,168,76,0.1), transparent)' }} />
+          <div className="relative">
+            <div className="font-display italic" style={{ fontSize: 'clamp(1.8rem, 4vw, 3.5rem)', color: 'var(--champagne)', lineHeight: 1.15, marginBottom: '1.5rem' }}>
+              Your love story begins<br />
+              <span className="gold-gradient">with a single invitation.</span>
+            </div>
+            <p style={{ color: 'var(--mist)', marginBottom: '2.5rem', fontSize: '1rem' }}>
+              No credit card required. Set up in under 5 minutes.
+            </p>
+            <Link href="/register" className="btn-gold px-10 py-4 rounded-xl text-sm font-semibold inline-block" style={{ letterSpacing: '0.04em' }}>
+              Start For Free Today
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Footer ────────────────────────────────────────── */}
+      <footer style={{ borderTop: '1px solid var(--ink-border)', padding: '2rem 4rem' }} className="flex items-center justify-between flex-wrap gap-4">
+        <span className="font-display" style={{ color: 'var(--gold)', fontSize: '1.25rem' }}>Invitely</span>
+        <p style={{ color: 'var(--dust)', fontSize: '0.8rem', letterSpacing: '0.06em' }}>
+          © 2025 INVITELY · ALL RIGHTS RESERVED
+        </p>
+        <div className="flex gap-6">
+          {['Privacy', 'Terms', 'Support'].map(l => (
+            <a key={l} href="#" style={{ color: 'var(--dust)', fontSize: '0.8rem', textDecoration: 'none' }}
+              onMouseEnter={e => (e.currentTarget.style.color = 'var(--gold)')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'var(--dust)')}>
+              {l}
+            </a>
+          ))}
+        </div>
       </footer>
-    </main>
+    </div>
   );
 }

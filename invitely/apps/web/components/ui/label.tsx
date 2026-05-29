@@ -8,7 +8,8 @@ export const Label = React.forwardRef<HTMLLabelElement, LabelProps>(
     return (
       <label
         ref={ref}
-        className={cn('block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1', className)}
+        className={cn('block text-xs font-medium mb-1.5', className)}
+        style={{ color: 'var(--mist)', letterSpacing: '0.08em', textTransform: 'uppercase' }}
         {...props}
       />
     );

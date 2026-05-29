@@ -50,39 +50,97 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left — Decorative */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-amber-900 via-amber-700 to-amber-500 relative overflow-hidden items-center justify-center">
-        <div className="text-center text-white z-10 px-12">
-          <h1 className="text-5xl font-serif mb-4">Invitely</h1>
-          <p className="text-xl opacity-80">Craft your perfect love story, one invite at a time.</p>
-          <div className="mt-12 grid grid-cols-3 gap-3 opacity-30">
-            {Array.from({ length: 9 }).map((_, i) => (
-              <div key={i} className="h-16 rounded-lg bg-white/20" />
-            ))}
+    <div className="min-h-screen flex" style={{ background: 'var(--ink)' }}>
+      {/* ── Left panel — decorative ── */}
+      <div
+        className="hidden lg:flex lg:w-[46%] relative overflow-hidden items-end"
+        style={{
+          background: 'linear-gradient(160deg, #1A1408 0%, #0C0B0A 60%)',
+          borderRight: '1px solid var(--ink-border)',
+        }}
+      >
+        {/* Radial glow */}
+        <div style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse 70% 50% at 40% 35%, rgba(201,168,76,0.13), transparent)',
+        }} />
+
+        {/* Floating invitation card */}
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+          <div
+            className="animate-float atelier-card"
+            style={{
+              width: 300,
+              boxShadow: '0 32px 80px rgba(0,0,0,0.7), 0 0 60px var(--gold-glow-lg)',
+            }}
+          >
+            <div style={{
+              background: 'linear-gradient(160deg, #231C0F, #1A1508)',
+              padding: '2.5rem 2rem',
+              textAlign: 'center',
+              position: 'relative',
+            }}>
+              <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.1), transparent)' }} />
+              <div className="relative">
+                <div style={{ fontSize: '0.6rem', letterSpacing: '0.2em', color: 'var(--gold-dim)', marginBottom: '1.25rem', textTransform: 'uppercase' }}>
+                  Wedding Invitation
+                </div>
+                <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, var(--gold-dim), transparent)', marginBottom: '1.5rem' }} />
+                <div className="font-display italic" style={{ fontSize: '2.5rem', color: 'var(--gold-light)', lineHeight: 1.1 }}>
+                  Layla<br />&amp;<br />Karim
+                </div>
+                <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, var(--gold-dim), transparent)', marginTop: '1.5rem', marginBottom: '1.25rem' }} />
+                <div style={{ fontSize: '0.7rem', letterSpacing: '0.12em', color: 'var(--mist)', textTransform: 'uppercase' }}>
+                  14 June 2025 · Dubai
+                </div>
+              </div>
+            </div>
+            <div style={{ padding: '1.25rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <div style={{ fontSize: '0.6rem', color: 'var(--dust)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Venue</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--champagne)', marginTop: '2px' }}>Atlantis The Palm</div>
+              </div>
+              <div className="btn-gold" style={{ padding: '5px 14px', borderRadius: 6, fontSize: '0.7rem' }}>RSVP</div>
+            </div>
           </div>
+        </div>
+
+        {/* Bottom brand */}
+        <div style={{ padding: '2.5rem', position: 'relative', width: '100%' }}>
+          <div className="font-display" style={{ color: 'var(--gold)', fontSize: '1.75rem', marginBottom: '0.5rem' }}>Invitely</div>
+          <p style={{ color: 'var(--dust)', fontSize: '0.85rem' }}>
+            Every great love deserves a great invitation.
+          </p>
         </div>
       </div>
 
-      {/* Right — Form */}
-      <div className="flex-1 flex items-center justify-center px-8 py-12 bg-white dark:bg-zinc-950">
-        <div className="w-full max-w-md space-y-8">
-          <div className="text-center">
-            <div className="lg:hidden text-3xl font-serif text-amber-700 mb-2">Invitely</div>
-            <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">Welcome back</h2>
-            <p className="text-zinc-500 mt-2">Sign in to continue to Invitely</p>
+      {/* ── Right panel — form ── */}
+      <div className="flex-1 flex items-center justify-center px-8 py-16">
+        <div style={{ width: '100%', maxWidth: 420 }}>
+          {/* Mobile logo */}
+          <div className="lg:hidden font-display text-2xl mb-10 text-center" style={{ color: 'var(--gold-light)' }}>
+            Invitely
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <div style={{ marginBottom: '2.5rem' }}>
+            <h2 className="font-display" style={{ fontSize: '2rem', color: 'var(--champagne)', marginBottom: '0.5rem' }}>
+              Welcome back
+            </h2>
+            <p style={{ color: 'var(--mist)', fontSize: '0.9rem' }}>
+              Sign in to your atelier account
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Email address</Label>
               <Input id="email" type="email" placeholder="you@example.com" {...register('email')} />
-              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
+              {errors.email && <p style={{ color: '#E07070', fontSize: '0.78rem', marginTop: '0.35rem' }}>{errors.email.message}</p>}
             </div>
 
             <div>
               <Label htmlFor="password">Password</Label>
-              <div className="relative">
+              <div style={{ position: 'relative' }}>
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
@@ -91,34 +149,34 @@ export default function LoginPage() {
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600"
+                  style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--dust)', background: 'none', border: 'none', cursor: 'pointer' }}
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
-              {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
+              {errors.password && <p style={{ color: '#E07070', fontSize: '0.78rem', marginTop: '0.35rem' }}>{errors.password.message}</p>}
             </div>
 
-            <div className="text-right">
-              <Link href="/forgot-password" className="text-sm text-amber-600 hover:underline">
+            <div style={{ textAlign: 'right' }}>
+              <Link href="/forgot-password" style={{ fontSize: '0.8rem', color: 'var(--gold)', textDecoration: 'none' }}>
                 Forgot password?
               </Link>
             </div>
 
-            <Button type="submit" className="w-full bg-amber-600 hover:bg-amber-700" disabled={loading}>
+            <Button type="submit" className="w-full" style={{ padding: '0.75rem', borderRadius: '10px' }} disabled={loading}>
               {loading ? (
-                <><Loader2 size={16} className="animate-spin mr-2" /> Signing in...</>
-              ) : (
-                'Sign In'
-              )}
+                <span style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}>
+                  <Loader2 size={15} className="animate-spin" /> Signing in…
+                </span>
+              ) : 'Sign In'}
             </Button>
           </form>
 
-          <p className="text-center text-zinc-500 text-sm">
-            Don&apos;t have an account?{' '}
-            <Link href="/register" className="text-amber-600 hover:underline font-medium">
-              Sign up free
+          <p style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.85rem', color: 'var(--mist)' }}>
+            No account?{' '}
+            <Link href="/register" style={{ color: 'var(--gold)', textDecoration: 'none', fontWeight: 600 }}>
+              Create one free
             </Link>
           </p>
         </div>

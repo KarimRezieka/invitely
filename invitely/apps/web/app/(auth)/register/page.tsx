@@ -60,15 +60,17 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-zinc-950 px-8">
-        <div className="text-center max-w-md">
-          <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-6" />
-          <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-3">Check your email!</h2>
-          <p className="text-zinc-500 mb-6">
-            We've sent a verification link to your email address. Please click the link to activate your account.
+      <div style={{ minHeight: '100vh', background: 'var(--ink)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+        <div style={{ textAlign: 'center', maxWidth: 400 }}>
+          <div className="font-display italic" style={{ fontSize: '4rem', color: 'var(--gold)', marginBottom: '1.5rem' }}>✉</div>
+          <h2 className="font-display" style={{ fontSize: '2rem', color: 'var(--champagne)', marginBottom: '0.75rem' }}>
+            Check your inbox
+          </h2>
+          <p style={{ color: 'var(--mist)', marginBottom: '2rem', lineHeight: 1.7, fontSize: '0.9rem' }}>
+            We&apos;ve sent a verification link to your email. Click it to activate your Invitely account.
           </p>
-          <Button onClick={() => router.push('/login')} className="bg-amber-600 hover:bg-amber-700">
-            Go to Login
+          <Button onClick={() => router.push('/login')} style={{ padding: '0.75rem 2rem', borderRadius: 10 }}>
+            Go to Sign In
           </Button>
         </div>
       </div>
@@ -76,80 +78,82 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex">
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-amber-900 via-amber-700 to-amber-500 items-center justify-center">
-        <div className="text-center text-white px-12">
-          <h1 className="text-5xl font-serif mb-4">Invitely</h1>
-          <p className="text-xl opacity-80">Your wedding, beautifully digital.</p>
+    <div className="min-h-screen flex" style={{ background: 'var(--ink)' }}>
+      {/* Left decorative */}
+      <div className="hidden lg:flex lg:w-[46%] relative overflow-hidden flex-col justify-end"
+        style={{ background: 'linear-gradient(160deg, #1A1408, #0C0B0A)', borderRight: '1px solid var(--ink-border)' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 70% 50% at 40% 35%, rgba(201,168,76,0.11), transparent)' }} />
+        <div style={{ padding: '3rem', position: 'relative' }}>
+          <div className="font-display" style={{ fontSize: '1.75rem', color: 'var(--gold)', marginBottom: '0.5rem' }}>Invitely</div>
+          <p style={{ color: 'var(--dust)', fontSize: '0.875rem', lineHeight: 1.6 }}>
+            Join thousands of couples creating<br />beautiful digital wedding memories.
+          </p>
+          <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {['Beautiful templates crafted by designers', 'Real-time RSVP management', 'Detailed analytics and insights'].map(f => (
+              <div key={f} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.8rem', color: 'var(--mist)' }}>
+                <div style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--gold)', flexShrink: 0 }} />
+                {f}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="flex-1 flex items-center justify-center px-8 py-12 bg-white dark:bg-zinc-950">
-        <div className="w-full max-w-md space-y-8">
-          <div className="text-center">
-            <div className="lg:hidden text-3xl font-serif text-amber-700 mb-2">Invitely</div>
-            <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">Create your account</h2>
-            <p className="text-zinc-500 mt-2">Start with a free account, no credit card required</p>
+      {/* Right form */}
+      <div className="flex-1 flex items-center justify-center px-8 py-16">
+        <div style={{ width: '100%', maxWidth: 420 }}>
+          <div className="lg:hidden font-display text-2xl mb-10 text-center" style={{ color: 'var(--gold-light)' }}>Invitely</div>
+
+          <div style={{ marginBottom: '2.5rem' }}>
+            <h2 className="font-display" style={{ fontSize: '2rem', color: 'var(--champagne)', marginBottom: '0.5rem' }}>
+              Create your account
+            </h2>
+            <p style={{ color: 'var(--mist)', fontSize: '0.9rem' }}>Free forever · No credit card required</p>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             <div>
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name">Your name</Label>
               <Input id="name" placeholder="Ahmed & Sara" {...register('name')} />
-              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
+              {errors.name && <p style={{ color: '#E07070', fontSize: '0.78rem', marginTop: '0.35rem' }}>{errors.name.message}</p>}
             </div>
 
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Email address</Label>
               <Input id="email" type="email" placeholder="you@example.com" {...register('email')} />
-              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
+              {errors.email && <p style={{ color: '#E07070', fontSize: '0.78rem', marginTop: '0.35rem' }}>{errors.email.message}</p>}
             </div>
 
             <div>
               <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Min. 8 chars, 1 uppercase, 1 number"
-                  {...register('password')}
-                />
-                <button
-                  type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              <div style={{ position: 'relative' }}>
+                <Input id="password" type={showPassword ? 'text' : 'password'} placeholder="Min 8 chars, 1 uppercase, 1 number" {...register('password')} />
+                <button type="button" style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--dust)', background: 'none', border: 'none', cursor: 'pointer' }}
+                  onClick={() => setShowPassword(!showPassword)}>
+                  {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
-              {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
+              {errors.password && <p style={{ color: '#E07070', fontSize: '0.78rem', marginTop: '0.35rem' }}>{errors.password.message}</p>}
             </div>
 
             <div>
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder="••••••••"
-                {...register('confirmPassword')}
-              />
-              {errors.confirmPassword && (
-                <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>
-              )}
+              <Label htmlFor="confirmPassword">Confirm password</Label>
+              <Input id="confirmPassword" type="password" placeholder="••••••••" {...register('confirmPassword')} />
+              {errors.confirmPassword && <p style={{ color: '#E07070', fontSize: '0.78rem', marginTop: '0.35rem' }}>{errors.confirmPassword.message}</p>}
             </div>
 
-            <Button type="submit" className="w-full bg-amber-600 hover:bg-amber-700" disabled={loading}>
+            <Button type="submit" className="w-full" style={{ padding: '0.75rem', borderRadius: '10px', marginTop: '0.25rem' }} disabled={loading}>
               {loading ? (
-                <><Loader2 size={16} className="animate-spin mr-2" /> Creating account...</>
-              ) : (
-                'Create Free Account'
-              )}
+                <span style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}>
+                  <Loader2 size={15} className="animate-spin" /> Creating account…
+                </span>
+              ) : 'Create Free Account'}
             </Button>
           </form>
 
-          <p className="text-center text-zinc-500 text-sm">
+          <p style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.85rem', color: 'var(--mist)' }}>
             Already have an account?{' '}
-            <Link href="/login" className="text-amber-600 hover:underline font-medium">
+            <Link href="/login" style={{ color: 'var(--gold)', textDecoration: 'none', fontWeight: 600 }}>
               Sign in
             </Link>
           </p>

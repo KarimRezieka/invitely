@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { MapPin, Calendar, Clock, Loader2, Heart } from 'lucide-react';
+import { MapPin, Calendar, Loader2 } from 'lucide-react';
 import api from '@/lib/api';
 
 interface Invitation {
@@ -17,7 +17,7 @@ interface Invitation {
   guestMessages: Array<{ id: string; authorName: string; message: string; createdAt: string }>;
 }
 
-function CountdownTimer({ targetDate }: { targetDate: string }) {
+function CountdownTimer({ targetDate, primary }: { targetDate: string; primary: string }) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
@@ -32,23 +32,28 @@ function CountdownTimer({ targetDate }: { targetDate: string }) {
       });
     };
     tick();
-    const timer = setInterval(tick, 1000);
-    return () => clearInterval(timer);
+    const t = setInterval(tick, 1000);
+    return () => clearInterval(t);
   }, [targetDate]);
 
   return (
-    <div className="flex gap-4 justify-center">
+    <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center' }}>
       {Object.entries(timeLeft).map(([unit, value]) => (
-        <div key={unit} className="text-center">
-          <div className="text-4xl font-bold tabular-nums">{String(value).padStart(2, '0')}</div>
-          <div className="text-xs uppercase tracking-wider opacity-70 mt-1">{unit}</div>
+        <div key={unit} style={{ textAlign: 'center' }}>
+          <div style={{
+            fontSize: '3.5rem', fontFamily: '"Playfair Display", serif', fontWeight: 700,
+            color: primary, lineHeight: 1, marginBottom: '0.35rem',
+          }}>
+            {String(value).padStart(2, '0')}
+          </div>
+          <div style={{ fontSize: '0.6rem', letterSpacing: '0.15em', textTransform: 'uppercase', opacity: 0.5 }}>{unit}</div>
         </div>
       ))}
     </div>
   );
 }
 
-function RSVPForm({ invitationSlug, primaryColor }: { invitationSlug: string; primaryColor: string }) {
+function RSVPForm({ invitationSlug, primary }: { invitationSlug: string; primary: string }) {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({ guestName: '', guestEmail: '', status: '', guestCount: 1, notes: '' });
   const [loading, setLoading] = useState(false);
@@ -67,103 +72,141 @@ function RSVPForm({ invitationSlug, primaryColor }: { invitationSlug: string; pr
     }
   };
 
+  const inputStyle = {
+    width: '100%', padding: '0.75rem 1rem', borderRadius: 8,
+    background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
+    color: 'inherit', fontSize: '0.9rem', outline: 'none',
+    transition: 'border-color 0.2s',
+  };
+
   if (done) {
     return (
-      <div className="text-center py-8">
-        <div className="text-5xl mb-4">🎉</div>
-        <h3 className="text-xl font-bold mb-2">Thank you, {form.guestName}!</h3>
-        <p className="opacity-70">
-          {form.status === 'ACCEPTED' ? "We can't wait to celebrate with you!" : "We'll miss you on our special day."}
+      <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+        <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>{form.status === 'ACCEPTED' ? '🥂' : '💌'}</div>
+        <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '1.75rem', marginBottom: '0.75rem', color: primary }}>
+          {form.status === 'ACCEPTED' ? 'We cannot wait to see you!' : 'You will be missed.'}
+        </h3>
+        <p style={{ opacity: 0.7, fontSize: '0.9rem' }}>
+          Thank you, {form.guestName}. Your response has been recorded.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-sm mx-auto">
+    <div style={{ maxWidth: 400, margin: '0 auto' }}>
       {step === 1 && (
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Your Name *</label>
-            <input
-              type="text"
-              className="w-full border border-zinc-200 rounded-lg px-3 py-2 text-zinc-900"
-              value={form.guestName}
-              onChange={(e) => setForm({ ...form, guestName: e.target.value })}
-              placeholder="Full name"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <input
-              type="email"
-              className="w-full border border-zinc-200 rounded-lg px-3 py-2 text-zinc-900"
-              value={form.guestEmail}
-              onChange={(e) => setForm({ ...form, guestEmail: e.target.value })}
-              placeholder="your@email.com"
-            />
-          </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <input
+            style={inputStyle}
+            placeholder="Your full name *"
+            value={form.guestName}
+            onChange={e => setForm({ ...form, guestName: e.target.value })}
+            onFocus={e => (e.target.style.borderColor = primary)}
+            onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.12)')}
+          />
+          <input
+            type="email"
+            style={inputStyle}
+            placeholder="Email address (optional)"
+            value={form.guestEmail}
+            onChange={e => setForm({ ...form, guestEmail: e.target.value })}
+            onFocus={e => (e.target.style.borderColor = primary)}
+            onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.12)')}
+          />
           <button
             onClick={() => form.guestName && setStep(2)}
-            className="w-full py-3 rounded-xl text-white font-semibold transition-opacity hover:opacity-90"
-            style={{ background: primaryColor }}
+            disabled={!form.guestName}
+            style={{
+              padding: '0.875rem', borderRadius: 8, border: 'none',
+              background: primary, color: '#0C0B0A', fontWeight: 700,
+              fontSize: '0.875rem', cursor: 'pointer', letterSpacing: '0.04em',
+              opacity: form.guestName ? 1 : 0.5, transition: 'opacity 0.2s',
+            }}
           >
-            Continue
+            Continue →
           </button>
         </div>
       )}
 
       {step === 2 && (
-        <div className="space-y-4">
-          <p className="text-center font-medium">Will you be joining us?</p>
-          <div className="grid grid-cols-2 gap-3">
+        <div>
+          <p style={{ textAlign: 'center', marginBottom: '1.5rem', fontFamily: '"Playfair Display", serif', fontSize: '1.25rem' }}>
+            Will you join us?
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
             <button
               onClick={() => { setForm({ ...form, status: 'ACCEPTED' }); setStep(3); }}
-              className="py-4 rounded-xl border-2 transition-all hover:scale-105 font-semibold text-white"
-              style={{ background: primaryColor, borderColor: primaryColor }}
+              style={{
+                padding: '1.5rem', borderRadius: 12, border: `2px solid ${primary}`,
+                background: 'rgba(255,255,255,0.04)', color: 'inherit', cursor: 'pointer',
+                fontFamily: '"Playfair Display", serif', fontSize: '1.1rem', transition: 'background 0.2s',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.1)')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
             >
-              ✓ Attending
+              <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>✓</div>
+              <div>Attending</div>
             </button>
             <button
               onClick={() => { setForm({ ...form, status: 'DECLINED' }); handleSubmit(); }}
-              className="py-4 rounded-xl border-2 border-zinc-300 text-zinc-600 transition-all hover:scale-105 font-semibold"
+              style={{
+                padding: '1.5rem', borderRadius: 12, border: '2px solid rgba(255,255,255,0.15)',
+                background: 'rgba(255,255,255,0.02)', color: 'inherit', cursor: 'pointer',
+                fontFamily: '"Playfair Display", serif', fontSize: '1.1rem', transition: 'background 0.2s',
+              }}
+              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.06)')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.02)')}
             >
-              ✗ Declining
+              <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>✗</div>
+              <div>Declining</div>
             </button>
           </div>
-          <button onClick={() => setStep(1)} className="text-sm opacity-60 w-full text-center">Back</button>
+          <button onClick={() => setStep(1)} style={{ background: 'none', border: 'none', color: 'inherit', opacity: 0.5, cursor: 'pointer', fontSize: '0.8rem', display: 'block', margin: '0 auto' }}>
+            ← Back
+          </button>
         </div>
       )}
 
       {step === 3 && (
-        <div className="space-y-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div>
-            <label className="block text-sm font-medium mb-1">Number of guests</label>
+            <label style={{ fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.6, display: 'block', marginBottom: '0.5rem' }}>
+              Number of guests
+            </label>
             <select
-              className="w-full border border-zinc-200 rounded-lg px-3 py-2 text-zinc-900"
+              style={{ ...inputStyle }}
               value={form.guestCount}
-              onChange={(e) => setForm({ ...form, guestCount: parseInt(e.target.value) })}
+              onChange={e => setForm({ ...form, guestCount: parseInt(e.target.value) })}
             >
-              {[1, 2, 3, 4, 5].map((n) => <option key={n} value={n}>{n}</option>)}
+              {[1, 2, 3, 4, 5].map(n => <option key={n} value={n}>{n} guest{n > 1 ? 's' : ''}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">A message for the couple (optional)</label>
+            <label style={{ fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.6, display: 'block', marginBottom: '0.5rem' }}>
+              A message (optional)
+            </label>
             <textarea
-              className="w-full border border-zinc-200 rounded-lg px-3 py-2 text-zinc-900"
+              style={{ ...inputStyle, resize: 'none' }}
               rows={3}
               value={form.notes}
-              onChange={(e) => setForm({ ...form, notes: e.target.value })}
-              placeholder="Share your wishes..."
+              onChange={e => setForm({ ...form, notes: e.target.value })}
+              placeholder="Share your wishes with the couple…"
+              onFocus={e => (e.target.style.borderColor = primary)}
+              onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.12)')}
             />
           </div>
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="w-full py-3 rounded-xl text-white font-semibold disabled:opacity-50"
-            style={{ background: primaryColor }}
+            style={{
+              padding: '0.875rem', borderRadius: 8, border: 'none',
+              background: primary, color: '#0C0B0A', fontWeight: 700,
+              fontSize: '0.875rem', cursor: 'pointer', letterSpacing: '0.04em',
+              opacity: loading ? 0.6 : 1,
+            }}
           >
-            {loading ? 'Submitting...' : 'Confirm RSVP'}
+            {loading ? 'Sending…' : 'Confirm RSVP'}
           </button>
         </div>
       )}
@@ -178,133 +221,217 @@ export default function PublicInvitationPage() {
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    api.get(`/inv/${params.slug}`).then((res) => {
-      setInvitation(res.data);
-    }).catch(() => setNotFound(true)).finally(() => setLoading(false));
+    api.get(`/inv/${params.slug}`)
+      .then(res => setInvitation(res.data))
+      .catch(() => setNotFound(true))
+      .finally(() => setLoading(false));
   }, [params.slug]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-amber-600" size={32} />
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0C0B0A' }}>
+        <div className="spinner" />
       </div>
     );
   }
 
   if (notFound || !invitation) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center text-center p-8">
-        <div className="text-6xl mb-4">💍</div>
-        <h1 className="text-2xl font-bold text-zinc-900 mb-2">Invitation Not Found</h1>
-        <p className="text-zinc-500">This invitation may have been removed or the link is incorrect.</p>
+      <div style={{ minHeight: '100vh', background: '#0C0B0A', color: '#F5EDD9', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2rem' }}>
+        <div style={{ fontFamily: '"Playfair Display", serif', fontSize: '4rem', opacity: 0.2, marginBottom: '1.5rem' }}>♡</div>
+        <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '2rem', marginBottom: '0.75rem' }}>Invitation Not Found</h1>
+        <p style={{ color: '#9E9188', fontSize: '0.9rem' }}>This invitation may have been removed or the link is incorrect.</p>
       </div>
     );
   }
 
   const theme = invitation.content?.theme || {};
-  const primaryColor = theme.primary || '#C9A84C';
+  const primary = theme.primary || '#C9A84C';
+  const isDark = theme.dark !== false;
+
+  const bg = isDark ? '#0C0B0A' : '#FAF7F2';
+  const textColor = isDark ? '#F5EDD9' : '#1A1510';
+  const mutedColor = isDark ? '#9E9188' : '#6B5F52';
+  const cardBg = isDark ? '#141210' : '#FFFFFF';
+  const cardBorder = isDark ? 'rgba(201,168,76,0.12)' : 'rgba(0,0,0,0.08)';
+
   const sections: any[] = invitation.content?.sections || [];
+  const hasSection = (type: string) => sections.some(s => s.type === type && s.enabled !== false);
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero */}
-      <section
-        className="min-h-screen flex flex-col items-center justify-center text-center p-8 relative overflow-hidden"
-        style={{ background: `linear-gradient(135deg, ${primaryColor}ee, ${primaryColor}99)` }}
-      >
-        <div className="relative z-10 text-white">
-          <div className="flex items-center gap-3 justify-center mb-6">
-            <div className="h-px w-16 bg-white/50" />
-            <Heart size={20} className="opacity-70" fill="currentColor" />
-            <div className="h-px w-16 bg-white/50" />
+    <div style={{ minHeight: '100vh', background: bg, color: textColor, fontFamily: '"DM Sans", sans-serif' }}>
+
+      {/* ── Hero ── */}
+      <section style={{
+        minHeight: '100vh', display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center', textAlign: 'center',
+        padding: '4rem 2rem', position: 'relative', overflow: 'hidden',
+      }}>
+        {/* Background glow */}
+        <div style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background: `radial-gradient(ellipse 80% 60% at 50% 40%, ${primary}1A, transparent)`,
+        }} />
+        {/* Grain */}
+        {isDark && (
+          <div style={{
+            position: 'absolute', inset: 0, opacity: 0.03, pointerEvents: 'none',
+            backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+          }} />
+        )}
+
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          {/* Eyebrow rule */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: 'center', marginBottom: '2rem' }}>
+            <div style={{ height: '1px', width: 60, background: `linear-gradient(90deg, transparent, ${primary})` }} />
+            <span style={{ fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: primary, opacity: 0.8 }}>
+              Wedding Invitation
+            </span>
+            <div style={{ height: '1px', width: 60, background: `linear-gradient(90deg, ${primary}, transparent)` }} />
           </div>
-          <div className="text-sm uppercase tracking-widest opacity-80 mb-4">You are cordially invited to</div>
-          <h1 className="text-5xl md:text-7xl font-serif mb-4">
+
+          {/* Names */}
+          <h1 style={{
+            fontFamily: '"Playfair Display", serif', fontStyle: 'italic',
+            fontSize: 'clamp(3.5rem, 10vw, 7rem)', lineHeight: 0.95,
+            color: primary, marginBottom: '1.5rem', letterSpacing: '-0.02em',
+          }}>
             {invitation.groomName}
-            <span className="block text-3xl md:text-5xl opacity-70 my-2">&</span>
+            <br />
+            <span style={{ fontSize: '0.45em', fontStyle: 'normal', color: isDark ? '#4A3F30' : '#C0A870', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
+              &amp;
+            </span>
+            <br />
             {invitation.brideName}
           </h1>
-          <div className="flex items-center justify-center gap-6 mt-6 text-white/80">
-            <span className="flex items-center gap-2">
-              <Calendar size={16} />
+
+          {/* Date + venue */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'center', marginBottom: '2rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: mutedColor, letterSpacing: '0.06em' }}>
+              <Calendar size={13} style={{ color: primary, opacity: 0.7 }} />
               {new Date(invitation.eventDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-            </span>
+            </div>
             {invitation.venue && (
-              <span className="flex items-center gap-2">
-                <MapPin size={16} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: mutedColor }}>
+                <MapPin size={13} style={{ color: primary, opacity: 0.7 }} />
                 {invitation.venue}
-              </span>
+              </div>
             )}
           </div>
-        </div>
-        <div className="absolute inset-0 opacity-5">
-          {Array.from({ length: 20 }).map((_, i) => (
-            <div key={i} className="absolute text-6xl" style={{ top: `${Math.random() * 100}%`, left: `${Math.random() * 100}%`, transform: 'rotate(-45deg)' }}>💍</div>
-          ))}
+
+          {/* Scroll hint */}
+          <div style={{ fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: mutedColor, opacity: 0.5 }}>
+            Scroll to explore ↓
+          </div>
         </div>
       </section>
 
-      {/* Countdown */}
-      {sections.some((s) => s.type === 'countdown' && s.enabled) && (
-        <section className="py-16 text-center px-8" style={{ background: `${primaryColor}11` }}>
-          <h2 className="text-2xl font-serif mb-8" style={{ color: primaryColor }}>Counting Down</h2>
-          <CountdownTimer targetDate={invitation.eventDate} />
-        </section>
-      )}
-
-      {/* Event Details */}
-      {sections.some((s) => s.type === 'eventDetails' && s.enabled) && (
-        <section className="py-16 px-8 max-w-2xl mx-auto">
-          <h2 className="text-3xl font-serif text-center mb-8" style={{ color: primaryColor }}>Event Details</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="text-center p-6 rounded-2xl border border-zinc-100">
-              <Calendar className="mx-auto mb-3" style={{ color: primaryColor }} />
-              <h3 className="font-semibold mb-1">Date & Time</h3>
-              <p className="text-zinc-500 text-sm">
-                {new Date(invitation.eventDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-              </p>
+      {/* ── Countdown ── */}
+      {hasSection('countdown') && (
+        <section style={{ padding: '5rem 2rem', textAlign: 'center', borderTop: `1px solid ${cardBorder}` }}>
+          <div style={{ marginBottom: '3rem' }}>
+            <div style={{ fontSize: '0.65rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: primary, marginBottom: '0.75rem', opacity: 0.8 }}>
+              Counting Down To
             </div>
-            {invitation.venue && (
-              <div className="text-center p-6 rounded-2xl border border-zinc-100">
-                <MapPin className="mx-auto mb-3" style={{ color: primaryColor }} />
-                <h3 className="font-semibold mb-1">Venue</h3>
-                <p className="text-zinc-500 text-sm">{invitation.venue}</p>
-                {invitation.venueAddress && <p className="text-zinc-400 text-xs mt-1">{invitation.venueAddress}</p>}
+            <h2 style={{ fontFamily: '"Playfair Display", serif', fontSize: '2rem', color: textColor }}>
+              The Celebration
+            </h2>
+          </div>
+          <CountdownTimer targetDate={invitation.eventDate} primary={primary} />
+        </section>
+      )}
+
+      {/* ── Event Details ── */}
+      {hasSection('eventDetails') && (
+        <section style={{ padding: '5rem 2rem', borderTop: `1px solid ${cardBorder}` }}>
+          <div style={{ maxWidth: 640, margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+              <div style={{ fontSize: '0.65rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: primary, marginBottom: '0.75rem', opacity: 0.8 }}>
+                Details
               </div>
-            )}
+              <h2 style={{ fontFamily: '"Playfair Display", serif', fontSize: '2.5rem', color: textColor }}>
+                Event Details
+              </h2>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+              {[
+                {
+                  icon: Calendar,
+                  label: 'Date',
+                  value: new Date(invitation.eventDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+                },
+                ...(invitation.venue ? [{
+                  icon: MapPin,
+                  label: 'Venue',
+                  value: invitation.venue + (invitation.venueAddress ? `\n${invitation.venueAddress}` : ''),
+                }] : []),
+              ].map((item, i) => (
+                <div key={i} style={{
+                  background: cardBg, border: `1px solid ${cardBorder}`,
+                  borderRadius: 12, padding: '1.75rem',
+                  textAlign: 'center',
+                }}>
+                  <item.icon size={20} style={{ color: primary, opacity: 0.7, marginBottom: '0.75rem' }} />
+                  <div style={{ fontSize: '0.65rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: mutedColor, marginBottom: '0.5rem' }}>
+                    {item.label}
+                  </div>
+                  <div style={{ fontSize: '0.9rem', color: textColor, whiteSpace: 'pre-line', lineHeight: 1.6 }}>{item.value}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       )}
 
-      {/* RSVP */}
-      {sections.some((s) => s.type === 'rsvp' && s.enabled) && (
-        <section className="py-16 px-8" style={{ background: `${primaryColor}11` }}>
-          <div className="max-w-lg mx-auto text-center">
-            <h2 className="text-3xl font-serif mb-3" style={{ color: primaryColor }}>RSVP</h2>
-            <p className="text-zinc-500 mb-8">Kindly respond by {new Date(invitation.eventDate).toLocaleDateString()}</p>
-            <RSVPForm invitationSlug={params.slug as string} primaryColor={primaryColor} />
+      {/* ── RSVP ── */}
+      {hasSection('rsvp') && (
+        <section style={{ padding: '5rem 2rem', borderTop: `1px solid ${cardBorder}` }}>
+          <div style={{ maxWidth: 480, margin: '0 auto', textAlign: 'center' }}>
+            <div style={{ fontSize: '0.65rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: primary, marginBottom: '0.75rem', opacity: 0.8 }}>
+              Kindly Respond
+            </div>
+            <h2 style={{ fontFamily: '"Playfair Display", serif', fontSize: '2.5rem', color: textColor, marginBottom: '0.75rem' }}>
+              RSVP
+            </h2>
+            <p style={{ color: mutedColor, fontSize: '0.9rem', marginBottom: '2.5rem' }}>
+              Please respond by{' '}
+              {new Date(new Date(invitation.eventDate).getTime() - 7 * 86400000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+            </p>
+            <RSVPForm invitationSlug={params.slug as string} primary={primary} />
           </div>
         </section>
       )}
 
-      {/* Guestbook */}
+      {/* ── Guestbook messages ── */}
       {invitation.guestMessages.length > 0 && (
-        <section className="py-16 px-8 max-w-2xl mx-auto">
-          <h2 className="text-3xl font-serif text-center mb-8" style={{ color: primaryColor }}>Wishes</h2>
-          <div className="space-y-4">
-            {invitation.guestMessages.map((msg) => (
-              <div key={msg.id} className="p-4 rounded-xl border border-zinc-100">
-                <p className="text-zinc-700 mb-2">"{msg.message}"</p>
-                <p className="text-sm font-medium text-zinc-400">— {msg.authorName}</p>
-              </div>
-            ))}
+        <section style={{ padding: '5rem 2rem', borderTop: `1px solid ${cardBorder}` }}>
+          <div style={{ maxWidth: 640, margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+              <h2 style={{ fontFamily: '"Playfair Display", serif', fontSize: '2.5rem', color: textColor }}>
+                Wishes
+              </h2>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {invitation.guestMessages.map(msg => (
+                <div key={msg.id} style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: 12, padding: '1.5rem' }}>
+                  <p style={{ fontFamily: '"Playfair Display", serif', fontStyle: 'italic', fontSize: '1.05rem', color: textColor, marginBottom: '0.75rem', lineHeight: 1.6 }}>
+                    &ldquo;{msg.message}&rdquo;
+                  </p>
+                  <p style={{ fontSize: '0.8rem', color: mutedColor }}>— {msg.authorName}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       )}
 
-      {/* Footer */}
-      <footer className="py-8 text-center text-sm text-zinc-400 border-t border-zinc-100">
-        <p>Created with <a href="/" className="text-amber-600 hover:underline">Invitely</a></p>
+      {/* ── Footer ── */}
+      <footer style={{ padding: '2rem', textAlign: 'center', borderTop: `1px solid ${cardBorder}` }}>
+        <p style={{ fontSize: '0.75rem', color: mutedColor, letterSpacing: '0.06em' }}>
+          Created with{' '}
+          <a href="/" style={{ color: primary, textDecoration: 'none' }}>Invitely</a>
+          {' '}· The luxury invitation platform
+        </p>
       </footer>
     </div>
   );

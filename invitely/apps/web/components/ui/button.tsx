@@ -7,18 +7,18 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses = {
-  default: 'bg-amber-600 text-white hover:bg-amber-700',
-  outline: 'border border-zinc-300 bg-transparent hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800',
-  ghost: 'hover:bg-zinc-100 dark:hover:bg-zinc-800',
-  destructive: 'bg-red-600 text-white hover:bg-red-700',
-  link: 'text-amber-600 underline-offset-4 hover:underline',
+  default: 'btn-gold',
+  outline: 'btn-ghost',
+  ghost: 'btn-ghost',
+  destructive: 'btn-ghost',
+  link: 'text-gold underline-offset-4 hover:underline bg-transparent border-none',
 };
 
 const sizeClasses = {
-  sm: 'h-8 px-3 text-sm',
+  sm: 'h-8 px-3 text-xs',
   md: 'h-10 px-4 text-sm',
   lg: 'h-12 px-6 text-base',
-  icon: 'h-10 w-10',
+  icon: 'h-9 w-9',
 };
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -27,7 +27,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:opacity-50 disabled:pointer-events-none',
+          'inline-flex items-center justify-center rounded-lg font-medium transition-all duration-200 focus-visible:outline-none disabled:opacity-40 disabled:pointer-events-none',
           variantClasses[variant],
           sizeClasses[size],
           className

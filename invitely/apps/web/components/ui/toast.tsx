@@ -1,6 +1,5 @@
 'use client';
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
 
 interface Toast {
@@ -25,29 +24,45 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     setTimeout(() => setToasts((prev) => prev.filter((t) => t.id !== id)), 5000);
   }, []);
 
+  const dismiss = (id: string) => setToasts((prev) => prev.filter((t) => t.id !== id));
+
   return (
     <ToastContext.Provider value={{ toast }}>
       {children}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
+      <div style={{ position: 'fixed', bottom: '1.5rem', right: '1.5rem', zIndex: 9998, display: 'flex', flexDirection: 'column', gap: '0.5rem', maxWidth: 360 }}>
         {toasts.map((t) => (
           <div
             key={t.id}
-            className={cn(
-              'flex items-start gap-3 rounded-lg p-4 shadow-lg min-w-72 max-w-96',
-              t.variant === 'destructive'
-                ? 'bg-red-600 text-white'
-                : 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
-            )}
+            style={{
+              background: t.variant === 'destructive' ? '#1C0D0D' : 'var(--ink-surface)',
+              border: `1px solid ${t.variant === 'destructive' ? 'rgba(224,112,112,0.25)' : 'var(--ink-border-strong)'}`,
+              borderRadius: 10,
+              padding: '0.875rem 1rem',
+              display: 'flex', alignItems: 'flex-start', gap: '0.75rem',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
+              animation: 'fadeUp 0.3s ease forwards',
+            }}
           >
-            <div className="flex-1">
-              <p className="font-semibold text-sm">{t.title}</p>
-              {t.description && <p className="text-xs opacity-80 mt-0.5">{t.description}</p>}
+            {/* Accent line */}
+            <div style={{
+              width: 3, borderRadius: 3, alignSelf: 'stretch', flexShrink: 0,
+              background: t.variant === 'destructive' ? '#E07070' : 'var(--gold)',
+            }} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--champagne)', marginBottom: t.description ? '0.2rem' : 0 }}>
+                {t.title}
+              </p>
+              {t.description && (
+                <p style={{ fontSize: '0.78rem', color: 'var(--mist)', lineHeight: 1.5 }}>{t.description}</p>
+              )}
             </div>
             <button
-              onClick={() => setToasts((prev) => prev.filter((x) => x.id !== t.id))}
-              className="opacity-70 hover:opacity-100"
+              onClick={() => dismiss(t.id)}
+              style={{ color: 'var(--dust)', background: 'none', border: 'none', cursor: 'pointer', padding: '2px', flexShrink: 0 }}
+              onMouseEnter={e => (e.currentTarget.style.color = 'var(--mist)')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'var(--dust)')}
             >
-              <X size={14} />
+              <X size={13} />
             </button>
           </div>
         ))}

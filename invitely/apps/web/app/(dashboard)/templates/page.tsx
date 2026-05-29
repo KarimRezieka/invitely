@@ -45,35 +45,45 @@ export default function TemplatesPage() {
   }, [debouncedSearch, category]);
 
   return (
-    <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">Choose Your Template</h1>
-        <p className="text-zinc-500 mt-1">Select a beautiful design to start building your invitation</p>
+    <div style={{ padding: '2.5rem', minHeight: '100%', background: 'var(--ink)' }}>
+      {/* Header */}
+      <div style={{ marginBottom: '2rem' }}>
+        <div style={{ fontSize: '0.65rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--gold-dim)', marginBottom: '0.4rem' }}>
+          Template Gallery
+        </div>
+        <h1 className="font-display" style={{ fontSize: '2rem', color: 'var(--champagne)', lineHeight: 1.1 }}>
+          Choose your canvas
+        </h1>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <div className="relative flex-1 max-w-sm">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '2rem', alignItems: 'center' }}>
+        <div style={{ position: 'relative', flex: '0 0 220px' }}>
+          <Search size={13} style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--dust)', pointerEvents: 'none' }} />
           <Input
-            placeholder="Search templates..."
-            className="pl-9"
+            placeholder="Search…"
+            className="atelier-input"
+            style={{ paddingLeft: '2.25rem', height: 36, fontSize: '0.8rem' }}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <div className="flex gap-2 flex-wrap">
+        <div style={{ height: '1px', width: 1, background: 'var(--ink-border)', margin: '0 0.25rem' }} />
+        <div style={{ display: 'flex', gap: '0.375rem', flexWrap: 'wrap' }}>
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setCategory(cat)}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                category === cat
-                  ? 'bg-amber-600 text-white'
-                  : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700'
-              }`}
+              style={{
+                padding: '5px 12px', borderRadius: 999, fontSize: '0.75rem', fontWeight: 500,
+                border: category === cat ? '1px solid var(--gold)' : '1px solid var(--ink-border-strong)',
+                background: category === cat ? 'var(--gold-glow)' : 'transparent',
+                color: category === cat ? 'var(--gold-light)' : 'var(--mist)',
+                cursor: 'pointer', transition: 'all 0.15s',
+                letterSpacing: '0.03em',
+              }}
             >
-              {cat.charAt(0) + cat.slice(1).toLowerCase()}
+              {cat === 'All' ? 'All' : cat.charAt(0) + cat.slice(1).toLowerCase()}
             </button>
           ))}
         </div>
@@ -81,78 +91,119 @@ export default function TemplatesPage() {
 
       {/* Grid */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.25rem' }}>
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden animate-pulse">
-              <div className="aspect-[3/4] bg-zinc-200 dark:bg-zinc-800" />
-              <div className="p-3 space-y-2">
-                <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-3/4" />
-                <div className="h-3 bg-zinc-200 dark:bg-zinc-800 rounded w-1/2" />
+            <div key={i} style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid var(--ink-border)', background: 'var(--ink-raised)' }}>
+              <div style={{ aspectRatio: '3/4', background: 'var(--ink-surface)' }} className="animate-pulse" />
+              <div style={{ padding: '0.875rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                <div style={{ height: 12, borderRadius: 4, background: 'var(--ink-surface)', width: '70%' }} className="animate-pulse" />
+                <div style={{ height: 10, borderRadius: 4, background: 'var(--ink-surface)', width: '40%' }} className="animate-pulse" />
               </div>
             </div>
           ))}
         </div>
       ) : templates.length === 0 ? (
-        <div className="text-center py-16">
-          <div className="text-5xl mb-4">🔍</div>
-          <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-2">No templates found</h3>
-          <p className="text-zinc-500">Try a different search or category</p>
+        <div style={{ textAlign: 'center', padding: '5rem 2rem' }}>
+          <div className="font-display italic" style={{ fontSize: '3rem', color: 'var(--gold-dim)', opacity: 0.3, marginBottom: '1rem' }}>?</div>
+          <h3 style={{ color: 'var(--champagne)', fontSize: '1rem', marginBottom: '0.5rem' }}>No templates found</h3>
+          <p style={{ color: 'var(--mist)', fontSize: '0.85rem' }}>Try a different search or category filter</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '1.25rem' }}>
           {templates.map((template) => (
             <div
               key={template.id}
-              className="group relative rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+              className="group"
+              style={{
+                borderRadius: 12, overflow: 'hidden',
+                border: '1px solid var(--ink-border)',
+                background: 'var(--ink-raised)',
+                transition: 'border-color 0.25s, box-shadow 0.25s, transform 0.25s',
+                cursor: 'pointer',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.borderColor = 'rgba(201,168,76,0.3)';
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 16px 40px rgba(0,0,0,0.4), 0 0 20px var(--gold-glow-lg)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.borderColor = 'var(--ink-border)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             >
               {/* Thumbnail */}
-              <div className="relative aspect-[3/4] overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+              <div style={{ aspectRatio: '3/4', background: 'var(--ink-surface)', position: 'relative', overflow: 'hidden' }}>
                 {template.thumbnailUrl ? (
-                  <img
-                    src={template.thumbnailUrl}
-                    alt={template.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  <img src={template.thumbnailUrl} alt={template.name}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s' }}
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-6xl opacity-30">💍</span>
+                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '0.5rem' }}>
+                    {/* Template preview mockup */}
+                    <div style={{
+                      width: '70%',
+                      background: 'linear-gradient(160deg, #231C0F, #1A1508)',
+                      borderRadius: 8, padding: '1.5rem 1rem', textAlign: 'center',
+                      border: '1px solid rgba(201,168,76,0.15)',
+                    }}>
+                      <div style={{ fontSize: '0.5rem', letterSpacing: '0.15em', color: 'var(--gold-dim)', marginBottom: '0.5rem', textTransform: 'uppercase' }}>
+                        Invitation
+                      </div>
+                      <div className="font-display italic" style={{ color: 'var(--gold)', fontSize: '1.1rem' }}>
+                        {template.name.split(' ')[0]}
+                      </div>
+                    </div>
                   </div>
                 )}
 
-                {/* Hover overlay */}
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="text-white border-white hover:bg-white hover:text-black"
-                    onClick={() => router.push(`/inv/preview?template=${template.slug}`)}
-                  >
-                    <Eye size={14} className="mr-1" /> Preview
-                  </Button>
-                  <Button
-                    size="sm"
-                    className="bg-amber-500 hover:bg-amber-600"
+                {/* Overlay */}
+                <div style={{
+                  position: 'absolute', inset: 0, background: 'rgba(12,11,10,0.75)',
+                  opacity: 0, transition: 'opacity 0.25s',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                }}
+                  className="template-overlay"
+                  onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
+                  onMouseLeave={e => (e.currentTarget.style.opacity = '0')}
+                >
+                  <button
                     onClick={() => router.push(`/invitations/new?template=${template.id}`)}
+                    className="btn-gold"
+                    style={{ padding: '8px 16px', borderRadius: 8, fontSize: '0.78rem', border: 'none' }}
                   >
-                    Use This
-                  </Button>
+                    Use Template
+                  </button>
                 </div>
 
+                {/* Hover overlay trigger wrapper */}
+                <div
+                  style={{ position: 'absolute', inset: 0 }}
+                  onMouseEnter={e => {
+                    const overlay = e.currentTarget.previousElementSibling as HTMLElement;
+                    if (overlay) overlay.style.opacity = '1';
+                  }}
+                  onMouseLeave={e => {
+                    const overlay = e.currentTarget.previousElementSibling as HTMLElement;
+                    if (overlay) overlay.style.opacity = '0';
+                  }}
+                />
+
                 {template.isPremium && (
-                  <div className="absolute top-2 right-2">
-                    <Badge className="bg-amber-500 text-white gap-1 text-xs">
-                      <Crown size={10} /> Premium
-                    </Badge>
+                  <div style={{ position: 'absolute', top: '0.75rem', right: '0.75rem' }}>
+                    <span className="badge-gold" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <Crown size={9} /> Premium
+                    </span>
                   </div>
                 )}
               </div>
 
               {/* Info */}
-              <div className="p-3">
-                <h3 className="font-semibold text-sm truncate text-zinc-900 dark:text-white">{template.name}</h3>
-                <Badge variant="outline" className="text-xs mt-1 capitalize">
-                  {template.category.toLowerCase()}
-                </Badge>
+              <div style={{ padding: '0.875rem 1rem' }}>
+                <div style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--champagne)', marginBottom: '0.35rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {template.name}
+                </div>
+                <span className="badge-muted">{template.category.toLowerCase()}</span>
               </div>
             </div>
           ))}

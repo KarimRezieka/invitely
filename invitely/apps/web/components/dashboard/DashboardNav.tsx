@@ -9,10 +9,9 @@ import {
   Settings,
   CreditCard,
   LogOut,
-  ChevronDown,
+  ShieldCheck,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/auth.store';
-import { cn } from '@/lib/utils';
 import api from '@/lib/api';
 
 const navItems = [
@@ -23,76 +22,115 @@ const navItems = [
   { href: '/settings', icon: Settings, label: 'Settings' },
 ];
 
+function NavLink({ href, icon: Icon, label, active }: { href: string; icon: any; label: string; active: boolean }) {
+  return (
+    <Link href={href} className={`sidebar-link ${active ? 'active' : ''}`}>
+      <Icon size={16} strokeWidth={1.8} />
+      <span>{label}</span>
+    </Link>
+  );
+}
+
 export default function DashboardNav() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, clearAuth } = useAuthStore();
 
   const handleLogout = async () => {
-    try {
-      await api.post('/auth/logout');
-    } catch {}
+    try { await api.post('/auth/logout'); } catch {}
     clearAuth();
     router.push('/login');
   };
 
+  const planLabel = user?.subscription?.plan || 'FREE';
+
   return (
-    <aside className="w-64 h-screen bg-white dark:bg-zinc-950 border-r border-zinc-100 dark:border-zinc-800 flex flex-col">
+    <aside className="sidebar" style={{ width: 232, minWidth: 232, height: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Logo */}
-      <div className="h-16 flex items-center px-6 border-b border-zinc-100 dark:border-zinc-800">
-        <Link href="/dashboard" className="text-2xl font-serif text-amber-700">Invitely</Link>
+      <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--ink-border)', display: 'flex', alignItems: 'center' }}>
+        <Link href="/dashboard" style={{ textDecoration: 'none' }}>
+          <span className="font-display" style={{ color: 'var(--gold-light)', fontSize: '1.35rem', letterSpacing: '-0.01em' }}>
+            Invitely
+          </span>
+        </Link>
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 py-4 px-3 space-y-1">
-        {navItems.map(({ href, icon: Icon, label }) => (
-          <Link
-            key={href}
-            href={href}
-            className={cn(
-              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-              pathname === href || pathname.startsWith(href + '/')
-                ? 'bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400'
-                : 'text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white'
-            )}
-          >
-            <Icon size={18} />
-            {label}
-          </Link>
-        ))}
+      {/* Nav section label */}
+      <div style={{ padding: '1.5rem 1rem 0.5rem' }}>
+        <div style={{ fontSize: '0.6rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--dust)', fontWeight: 600, padding: '0 0.5rem' }}>
+          Navigation
+        </div>
+      </div>
 
-        {(user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN') && (
-          <Link
-            href="/admin"
-            className={cn(
-              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-              pathname.startsWith('/admin')
-                ? 'bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400'
-                : 'text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white'
-            )}
-          >
-            <Settings size={18} />
-            Admin Panel
-          </Link>
-        )}
+      {/* Nav links */}
+      <nav style={{ flex: 1, padding: '0.25rem 0.75rem', overflowY: 'auto' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {navItems.map(({ href, icon, label }) => (
+            <NavLink
+              key={href}
+              href={href}
+              icon={icon}
+              label={label}
+              active={pathname === href || (href !== '/dashboard' && pathname.startsWith(href + '/'))}
+            />
+          ))}
+
+          {(user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN') && (
+            <>
+              <div style={{ height: '1px', background: 'var(--ink-border)', margin: '0.75rem 0.5rem' }} />
+              <NavLink href="/admin" icon={ShieldCheck} label="Admin Panel" active={pathname.startsWith('/admin')} />
+            </>
+          )}
+        </div>
       </nav>
 
-      {/* User */}
-      <div className="p-3 border-t border-zinc-100 dark:border-zinc-800">
-        <div className="flex items-center gap-3 px-3 py-2 rounded-lg">
-          <div className="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-white text-sm font-bold">
+      {/* Plan badge */}
+      <div style={{ padding: '0.75rem 1rem' }}>
+        <div style={{
+          background: 'var(--ink-surface)',
+          border: '1px solid var(--ink-border)',
+          borderRadius: 8,
+          padding: '0.75rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.75rem',
+        }}>
+          <div style={{
+            width: 34, height: 34, borderRadius: 8,
+            background: 'linear-gradient(135deg, var(--gold-dim), var(--gold))',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '0.85rem', fontWeight: 700, color: 'var(--ink)',
+            flexShrink: 0,
+          }}>
             {user?.name?.charAt(0).toUpperCase()}
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-zinc-900 dark:text-white truncate">{user?.name}</p>
-            <p className="text-xs text-zinc-500 truncate">{user?.subscription?.plan || 'FREE'}</p>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <div style={{ fontSize: '0.8rem', color: 'var(--champagne)', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {user?.name}
+            </div>
+            <div style={{ fontSize: '0.65rem', color: 'var(--gold-dim)', letterSpacing: '0.06em', textTransform: 'uppercase', marginTop: 1 }}>
+              {planLabel}
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* Logout */}
+      <div style={{ padding: '0 0.75rem 1rem' }}>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-3 py-2 w-full text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-colors mt-1"
+          style={{
+            display: 'flex', alignItems: 'center', gap: '0.6rem',
+            width: '100%', padding: '0.6rem 0.75rem',
+            background: 'none', border: '1px solid transparent',
+            borderRadius: 8, cursor: 'pointer',
+            fontSize: '0.8rem', color: 'var(--dust)',
+            transition: 'color 0.2s, border-color 0.2s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.color = '#E07070'; e.currentTarget.style.borderColor = 'rgba(224,112,112,0.2)'; }}
+          onMouseLeave={e => { e.currentTarget.style.color = 'var(--dust)'; e.currentTarget.style.borderColor = 'transparent'; }}
         >
-          <LogOut size={16} />
+          <LogOut size={14} />
           Sign Out
         </button>
       </div>
