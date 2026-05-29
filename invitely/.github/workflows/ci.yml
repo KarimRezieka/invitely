@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: invitely_test
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      - name: Run API type check
+        working-directory: apps/api
+        env:
+          DATABASE_URL: postgresql://postgres:test@localhost:5432/invitely_test
+          JWT_SECRET: test-secret-key-at-least-32-characters-long
+          JWT_REFRESH_SECRET: test-refresh-secret-key-at-least-32-chars
+          REDIS_URL: redis://localhost:6379
+        run: npm run lint
+
+  deploy-frontend:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm install -g vercel
+      - run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+  deploy-backend:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Railway
+        run: |
+          curl -fsSL https://railway.app/install.sh | sh
+          railway deploy --service api
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
